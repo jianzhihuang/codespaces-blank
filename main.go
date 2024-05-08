@@ -1,10 +1,14 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
+	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"os"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +17,7 @@ func main() {
 	r := gin.Default()
 	//helloworld
 	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "Hello, world!")
+		c.String(http.StatusOK, "Hello~~~~~~~~~, world!")
 	})
 	r.GET("/hello/:id/:type", func(c *gin.Context) {
 		id := c.Param("id")
@@ -39,16 +43,7 @@ func main() {
 
 		c.String(http.StatusOK, result)
 	})
-	r.GET("/rand/:id", func(c *gin.Context) {
-		id := c.Param("id")
-		num, err := strconv.Atoi(id)
-		if err != nil {
-			c.String(http.StatusBadRequest, "Invalid ID")
-			return
-		}
-		randNum := rand.Intn(num)
-		c.String(http.StatusOK, fmt.Sprintf("Random number: %d", randNum))
-	})
+	r.GET("/get/:id", handleRandom)
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
 
@@ -68,4 +63,68 @@ func repeat(s string, count int) string {
 		result += s
 	}
 	return result
+}
+func handleRandom(c *gin.Context) {
+	id := c.Param("id")
+	fileSizeMB, err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid parameter"})
+		return
+	}
+
+	fileName := fmt.Sprintf("%d.txt", fileSizeMB)
+
+	// Check if file already exists
+	if _, err := os.Stat(fileName); err == nil {
+		content, err := ioutil.ReadFile(fileName)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file"})
+			return
+		}
+
+		c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))
+		c.Data(http.StatusOK, "application/octet-stream", content)
+		return
+	}
+
+	// Create new file
+	file, err := os.Create(fileName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create file"})
+		return
+	}
+	defer file.Close()
+
+	for i := 0; i < fileSizeMB; i++ {
+		data := generateRandomData(1000000) // Generate approximately 1MB of data
+		_, err := file.WriteString(data)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to write to file"})
+			return
+		}
+	}
+
+	content, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file"})
+		return
+	}
+
+	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))
+	c.Data(http.StatusOK, "application/octet-stream", content)
+
+}
+func generateRandomData(length int) string {
+	b := make([]byte, length/2)
+	_, _ = rand.Read(b)
+	s := hex.EncodeToString(b)
+
+	var builder strings.Builder
+	for i, c := range s {
+		if i > 0 && i%30 == 0 {
+			builder.WriteString("\n")
+		}
+		builder.WriteString(string(c))
+	}
+	return builder.String()
 }
