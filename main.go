@@ -11,7 +11,10 @@ import (
 
 func main() {
 	r := gin.Default()
-
+	//helloworld
+	r.GET("/", func(c *gin.Context) {
+		c.String(http.StatusOK, "Hello, world!")
+	})
 	r.GET("/hello/:id/:type", func(c *gin.Context) {
 		id := c.Param("id")
 		type_ := c.Param("type")
