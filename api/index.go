@@ -13,13 +13,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func main() {
-	r := gin.Default()
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
+	// 初始化 Gin 引擎，并定义路由
+	router := gin.Default()
+
 	//helloworld
-	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "Hello~~~~~~~~~, world!")
-	})
-	r.GET("/hello/:id/:type", func(c *gin.Context) {
+	router.StaticFile("/", "./static/index.html")
+	router.GET("/hello/:id/:type", func(c *gin.Context) {
 		id := c.Param("id")
 		type_ := c.Param("type")
 
@@ -43,8 +43,9 @@ func main() {
 
 		c.String(http.StatusOK, result)
 	})
-	r.GET("/get/:id", handleRandom)
-	r.Run() // listen and serve on 0.0.0.0:8080
+	router.GET("/rand/:id", handleRandom)
+	// 把 Gin 引擎和 HTTP Request/Response 对象传递给 Vercel
+	router.ServeHTTP(w, r)
 }
 
 func generateEmoji(id string, emojis []string) string {

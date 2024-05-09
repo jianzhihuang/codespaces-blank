@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>無聊做作</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgba(240, 240, 240, 0.9);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            color: #444;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        input,
+        select {
+            margin: 10px 0;
+            padding: 15px;
+            /* 增加 padding */
+            font-size: 1.2em;
+            /* 增加字體大小 */
+            border: 1px solid rgba(221, 221, 221, 0.5);
+            background-color: rgba(255, 255, 255, 0.5);
+            transition: box-shadow 0.3s ease;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            /* 增加寬度 */
+        }
+
+        select {
+            width: auto;
+            /* 保持原來的寬度 */
+        }
+
+        input:focus,
+        select:focus {
+            box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+        }
+
+        input[type="button"] {
+            background-color: rgba(76, 175, 80, 0.7);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="button"]:hover {
+            background-color: rgba(69, 160, 73, 0.7);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>輸入你要的數量及符號</h1>
+        <!--按下去 指引到/hello 頁面 !--->
+        <script>
+
+            function add(inputValue, selectValue) {
+                if (inputValue === "") {
+                    alert("請輸入一個數字！");
+                    return
+                }
+                if (selectValue === "rand") {
+                    console.log("inputValue", inputValue);
+                    window.location.href = "/rand/" + inputValue;
+                } else {
+                    window.location.href = "/hello/" + inputValue + "/" + selectValue;
+                }
+
+            }
+
+        </script>
+        <!--!--->
+        <!-- !--->
+        <!--!--->
+        <!--!--->
+        <input type="number" id="myInput" placeholder="輸入框">
+
+        <select id="mySelect">
+            <option value="heart">愛心符號 &hearts;</option>
+            <option value="smile">笑臉符號 &#x1F600;</option>
+            <option value="cry">哭臉符號 &#x1F622;</option>
+            <option value="cat">貓臉符號 &#x1F63A;</option>
+            <option value="dog">狗臉符號 &#x1F436;</option>
+            <option value="pig">豬臉符號 &#x1F437;</option>
+            <option value="rand">亂碼 🦩</option>
+        </select>
+
+        <input type="button" value="新增"
+            onclick="add(document.getElementById('myInput').value, document.getElementById('mySelect').value)">
+        <!-- !--->
+    </div>
+</body>
+
+</html>
