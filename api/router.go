@@ -135,7 +135,34 @@ func generateRandomData(length int) string {
 func Listen(w http.ResponseWriter, r *http.Request) {
 	router := gin.Default()
 	router.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "<h1>Hello from ~~Go!</h1>")
+		c.String(http.StatusOK, "Hello from ~~Go!")
 	})
+	router.GET("/hello/:id/:type", func(c *gin.Context) {
+		id := c.Param("id")
+		type_ := c.Param("type")
+
+		var result string
+		switch type_ {
+		case "heart":
+			result = generateEmoji(id, []string{"❤️", "♡", "💖", "💟", "🎁"})
+		case "smile":
+			result = generateEmoji(id, []string{"😀", "🤩", "😊", "🙂", "☺️", "😋"})
+		case "cry":
+			result = generateEmoji(id, []string{"😢", "😭", "😿"})
+		case "cat":
+			result = generateEmoji(id, []string{"🐈", "😾", "🐱", "😻", "🐱‍🚀"})
+		case "dog":
+			result = generateEmoji(id, []string{"🐶", "🐕", "🦮", "🐩", "🐕‍🦺"})
+		case "pig":
+			result = generateEmoji(id, []string{"🐷", "🐽", "🐖", "🐗"})
+		default:
+			result = fmt.Sprintf("Hello, world! Your ID is %s %s", id, type_)
+		}
+
+		c.String(http.StatusOK, result)
+	})
+	router.GET("/rand/:id", handleRandom)
+	// 把 Gin 引擎和 HTTP Request/Response 对象传递给 Vercel
+
 	router.ServeHTTP(w, r)
 }
