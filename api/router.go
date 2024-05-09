@@ -1,10 +1,10 @@
 package handler
 
 import (
+	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"io/ioutil"
-	"math/rand"
+
 	"net/http"
 	"os"
 	"strconv"
@@ -79,7 +79,7 @@ func handleRandom(c *gin.Context) {
 
 	// Check if file already exists
 	if _, err := os.Stat(fileName); err == nil {
-		content, err := ioutil.ReadFile(fileName)
+		content, err := os.ReadFile(fileName)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file"})
 			return
@@ -107,7 +107,7 @@ func handleRandom(c *gin.Context) {
 		}
 	}
 
-	content, err := ioutil.ReadFile(fileName)
+	content, err := os.ReadFile(fileName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file"})
 		return
@@ -161,7 +161,56 @@ func Listen(w http.ResponseWriter, r *http.Request) {
 
 		c.String(http.StatusOK, result)
 	})
-	router.GET("/rand/:id", handleRandom)
+	router.GET("/rand/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		println("id:", id)
+		fileSizeMB, err := strconv.Atoi(id)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid parameter"})
+			return
+		}
+
+		fileName := fmt.Sprintf("%d.txt", fileSizeMB)
+
+		// Check if file already exists
+		if _, err := os.Stat(fileName); err == nil {
+			content, err := os.ReadFile(fileName)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file"})
+				return
+			}
+
+			c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))
+			c.Data(http.StatusOK, "application/octet-stream", content)
+			return
+		}
+
+		// Create new file
+		file, err := os.Create(fileName)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create file"})
+			return
+		}
+		defer file.Close()
+
+		for i := 0; i < fileSizeMB; i++ {
+			data := generateRandomData(1000000) // Generate approximately 1MB of data
+			_, err := file.WriteString(data)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to write to file"})
+				return
+			}
+		}
+
+		content, err := os.ReadFile(fileName)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file"})
+			return
+		}
+
+		c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))
+		c.Data(http.StatusOK, "application/octet-stream", content)
+	})
 	// 把 Gin 引擎和 HTTP Request/Response 对象传递给 Vercel
 
 	router.ServeHTTP(w, r)
