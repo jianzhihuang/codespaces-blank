@@ -13,19 +13,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	// 初始化 Gin 引擎，并定义路由
-	router := gin.Default()
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Hello from Gin!",
-		})
-	})
-
-	// 把 Gin 引擎和 HTTP Request/Response 对象传递给 Vercel
-	router.ServeHTTP(w, r)
-}
-
 // func Handler(w http.ResponseWriter, r *http.Request) {
 // 	// 初始化 Gin 引擎，并定义路由
 // 	router := gin.Default()
@@ -143,6 +130,6 @@ func generateRandomData(length int) string {
 	return builder.String()
 }
 
-// func Listen(w http.ResponseWriter, r *http.Request) {
-// 	router.ServeHTTP(w, r)
-// }
+func Listen(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "<h1>Hello from Go!</h1>")
+}
