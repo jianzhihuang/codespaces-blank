@@ -1,10 +1,9 @@
 package handler
 
 import (
-	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-
+	"math/rand"
 	"net/http"
 	"os"
 	"strconv"
