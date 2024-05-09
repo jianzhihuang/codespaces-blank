@@ -13,6 +13,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var router *gin.Engine
+
 func Handler() *gin.Engine {
 	// 初始化 Gin 引擎，并定义路由
 	router := gin.Default()
@@ -131,5 +133,9 @@ func generateRandomData(length int) string {
 }
 
 func Listen(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "<h1>Hello from Go!</h1>")
+	router := gin.Default()
+	router.GET("/", func(c *gin.Context) {
+		c.String(http.StatusOK, "<h1>Hello from ~~Go!</h1>")
+	})
+	router.ServeHTTP(w, r)
 }
