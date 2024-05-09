@@ -1,13 +1,19 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/go
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-	"name": "Go",
+	"name": "Ubuntu",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/go:1-1.22-bookworm",
+	"image": "mcr.microsoft.com/devcontainers/base:jammy",
 	"features": {
+		"ghcr.io/devcontainers/features/go:1": {},
+		"ghcr.io/devcontainers/features/node:1": {},
+		"ghcr.io/devcontainers-contrib/features/npm-package:1": {},
 		"ghcr.io/devcontainers-contrib/features/vercel-cli:1": {},
-		"ghcr.io/cirolosapio/devcontainers-features/alpine-curl:0": {},
-		"ghcr.io/cirolosapio/devcontainers-features/alpine-git:0": {}
+		"ghcr.io/devcontainers-contrib/features/vercel-ncc:1": {},
+		"ghcr.io/devcontainers-contrib/features/vercel-pkg:1": {},
+		"ghcr.io/devcontainers-contrib/features/vercel-release:1": {},
+		"ghcr.io/devcontainers-contrib/features/vercel-serve:1": {},
+		"ghcr.io/jayree/devcontainer-features/npm-registry:1": {}
 	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
@@ -17,7 +23,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "go version",
+	// "postCreateCommand": "uname -a",
 
 	// Configure tool-specific properties.
 	// "customizations": {},

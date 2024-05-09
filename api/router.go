@@ -13,42 +13,53 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var router *gin.Engine
-
-func Handler(w http.ResponseWriter, r *http.Request) {
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	// 初始化 Gin 引擎，并定义路由
 	router := gin.Default()
-
-	//helloworld
-	router.StaticFile("/", "./static/index.html")
-	router.GET("/hello/:id/:type", func(c *gin.Context) {
-		id := c.Param("id")
-		type_ := c.Param("type")
-
-		var result string
-		switch type_ {
-		case "heart":
-			result = generateEmoji(id, []string{"❤️", "♡", "💖", "💟", "🎁"})
-		case "smile":
-			result = generateEmoji(id, []string{"😀", "🤩", "😊", "🙂", "☺️", "😋"})
-		case "cry":
-			result = generateEmoji(id, []string{"😢", "😭", "😿"})
-		case "cat":
-			result = generateEmoji(id, []string{"🐈", "😾", "🐱", "😻", "🐱‍🚀"})
-		case "dog":
-			result = generateEmoji(id, []string{"🐶", "🐕", "🦮", "🐩", "🐕‍🦺"})
-		case "pig":
-			result = generateEmoji(id, []string{"🐷", "🐽", "🐖", "🐗"})
-		default:
-			result = fmt.Sprintf("Hello, world! Your ID is %s %s", id, type_)
-		}
-
-		c.String(http.StatusOK, result)
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Hello from Gin!",
+		})
 	})
-	router.GET("/rand/:id", handleRandom)
+
 	// 把 Gin 引擎和 HTTP Request/Response 对象传递给 Vercel
 	router.ServeHTTP(w, r)
 }
+
+// func Handler(w http.ResponseWriter, r *http.Request) {
+// 	// 初始化 Gin 引擎，并定义路由
+// 	router := gin.Default()
+
+// 	//helloworld
+// 	router.StaticFile("/", "./static/index.html")
+// 	router.GET("/hello/:id/:type", func(c *gin.Context) {
+// 		id := c.Param("id")
+// 		type_ := c.Param("type")
+
+// 		var result string
+// 		switch type_ {
+// 		case "heart":
+// 			result = generateEmoji(id, []string{"❤️", "♡", "💖", "💟", "🎁"})
+// 		case "smile":
+// 			result = generateEmoji(id, []string{"😀", "🤩", "😊", "🙂", "☺️", "😋"})
+// 		case "cry":
+// 			result = generateEmoji(id, []string{"😢", "😭", "😿"})
+// 		case "cat":
+// 			result = generateEmoji(id, []string{"🐈", "😾", "🐱", "😻", "🐱‍🚀"})
+// 		case "dog":
+// 			result = generateEmoji(id, []string{"🐶", "🐕", "🦮", "🐩", "🐕‍🦺"})
+// 		case "pig":
+// 			result = generateEmoji(id, []string{"🐷", "🐽", "🐖", "🐗"})
+// 		default:
+// 			result = fmt.Sprintf("Hello, world! Your ID is %s %s", id, type_)
+// 		}
+
+// 		c.String(http.StatusOK, result)
+// 	})
+// 	router.GET("/rand/:id", handleRandom)
+// 	// 把 Gin 引擎和 HTTP Request/Response 对象传递给 Vercel
+// 	router.ServeHTTP(w, r)
+// }
 
 func generateEmoji(id string, emojis []string) string {
 	count, err := strconv.Atoi(id)
