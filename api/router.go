@@ -15,7 +15,7 @@ import (
 
 var router *gin.Engine
 
-func IndexHandler() {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	// 初始化 Gin 引擎，并定义路由
 	router := gin.Default()
 
@@ -131,6 +131,7 @@ func generateRandomData(length int) string {
 	}
 	return builder.String()
 }
-func Listen(w http.ResponseWriter, r *http.Request) {
-	router.ServeHTTP(w, r)
-}
+
+// func Listen(w http.ResponseWriter, r *http.Request) {
+// 	router.ServeHTTP(w, r)
+// }

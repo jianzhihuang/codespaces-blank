@@ -1,8 +1,7 @@
 {
-    "routes": [
-        {
-            "src": "/.*",
-            "dest": "/api/router.go"
+    "build": {
+        "env": {
+            "GO_BUILD_FLAGS": "-ldflags '-s -w'"
         }
-    ]
+    }
 }
