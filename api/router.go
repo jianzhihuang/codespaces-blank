@@ -212,5 +212,11 @@ func generateRandomData(length int) string {
 // 	})
 // 	// 把 Gin 引擎和 HTTP Request/Response 对象传递给 Vercel
 
-// 	router.ServeHTTP(w, r)
-// }
+//		router.ServeHTTP(w, r)
+//	}
+//
+// Handler 是 Vercel 需要的导出函数
+func InitHandler(w http.ResponseWriter, r *http.Request) {
+
+	router.ServeHTTP(w, r)
+}
