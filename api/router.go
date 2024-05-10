@@ -1,4 +1,4 @@
-package handler
+package main
 
 import (
 	"encoding/hex"
@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// var router *gin.Engine
+var router *gin.Engine
 
 // func Handler() *gin.Engine {
 // 	// 初始化 Gin 引擎，并定义路由
@@ -133,6 +133,6 @@ func generateRandomData(length int) string {
 
 // Handler 是 Vercel 需要的导出函数
 func InitHandler(w http.ResponseWriter, r *http.Request) {
-	router := gin.Default()
+
 	router.ServeHTTP(w, r)
 }
