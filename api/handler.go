@@ -1,11 +1,11 @@
 package handler
 
 import (
+	"bytes"
 	"encoding/hex"
 	"fmt"
 	"math/rand"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 
@@ -74,45 +74,20 @@ func handleRandom(c *gin.Context) {
 
 	fileName := fmt.Sprintf("%d.txt", fileSizeMB)
 
-	// Check if file already exists
-	if _, err := os.Stat(fileName); err == nil {
-		content, err := os.ReadFile(fileName)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file"})
-			return
-		}
-
-		c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))
-		c.Data(http.StatusOK, "application/octet-stream", content)
-		return
-	}
-
-	// Create new file
-	file, err := os.Create(fileName)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create file"})
-		return
-	}
-	defer file.Close()
+	// Create a buffer to hold the data
+	var buf bytes.Buffer
 
 	for i := 0; i < fileSizeMB; i++ {
 		data := generateRandomData(1000000) // Generate approximately 1MB of data
-		_, err := file.WriteString(data)
+		_, err := buf.WriteString(data)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to write to file"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to write to buffer"})
 			return
 		}
 	}
 
-	content, err := os.ReadFile(fileName)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read file"})
-		return
-	}
-
 	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))
-	c.Data(http.StatusOK, "application/octet-stream", content)
-
+	c.Data(http.StatusOK, "application/octet-stream", buf.Bytes())
 }
 func generateRandomData(length int) string {
 	b := make([]byte, length/2)
