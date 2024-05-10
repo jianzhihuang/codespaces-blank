@@ -11,6 +11,10 @@
         {
             "src": "/hello/(.*)",
             "dest": "/api/handler.go"
+        },
+        {
+            "src": "/rand/(.*)",
+            "dest": "/api/handler.go"
         }
     ]
 }

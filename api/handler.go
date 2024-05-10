@@ -165,6 +165,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		c.String(http.StatusOK, result)
 	})
+	router.GET("/rand/:id", handleRandom)
 	// 将 Gin 的处理器适配到标准 net/http
 	router.ServeHTTP(w, r)
 }
