@@ -21,7 +21,7 @@ func Handler() *gin.Engine {
 	})
 	// 其他路由和处理器
 	Router.GET("/ping", func(c *gin.Context) {
-		c.String(200, "HELLLLLLLLLLLLLLLL")
+		c.JSON(http.StatusOK, gin.H{"message": "Welcome to the Gin server!"})
 	})
 	// 将 Gin 的处理器适配到标准 net/http
 	// http.Handle("/sss", router)
