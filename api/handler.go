@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"bytes"
 	"encoding/hex"
 	"fmt"
 	"math/rand"
@@ -64,6 +63,7 @@ func repeat(s string, count int) string {
 	}
 	return result
 }
+
 func handleRandom(c *gin.Context) {
 	id := c.Param("id")
 	fileSizeMB, err := strconv.Atoi(id)
@@ -74,20 +74,17 @@ func handleRandom(c *gin.Context) {
 
 	fileName := fmt.Sprintf("%d.txt", fileSizeMB)
 
-	// Create a buffer to hold the data
-	var buf bytes.Buffer
-
-	for i := 0; i < fileSizeMB; i++ {
-		data := generateRandomData(1000000) // Generate approximately 1MB of data
-		_, err := buf.WriteString(data)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to write to buffer"})
-			return
-		}
+	// Send a GET request to the specified URL
+	resp, err := http.Get(fmt.Sprintf("https://rustint.shuttleapp.rs/rand/%d", fileSizeMB))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data"})
+		return
 	}
+	defer resp.Body.Close()
 
+	// Set the headers for the response
 	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))
-	c.Data(http.StatusOK, "application/octet-stream", buf.Bytes())
+	c.DataFromReader(http.StatusOK, resp.ContentLength, resp.Header.Get("Content-Type"), resp.Body, nil)
 }
 func generateRandomData(length int) string {
 	b := make([]byte, length/2)
