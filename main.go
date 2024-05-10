@@ -7,6 +7,9 @@ func main() {
 
 	// 设置静态文件目录
 	r.Static("/", "./public")
+	r.GET("/ping", func(c *gin.Context) {
+		c.String(200, "hell~world")
+	})
 
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
