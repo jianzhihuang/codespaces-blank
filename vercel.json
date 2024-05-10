@@ -1,8 +1,17 @@
 {
+    "functions": {
+        "api/handler.go": {
+            "runtime": "vercel-go@0.5.3"
+        }
+    },
     "routes": [
         {
-            "src": "/(.*)",
+            "src": "/api",
             "dest": "/api/handler.go"
+        },
+        {
+            "src": "/",
+            "dest": "/public/index.html"
         }
     ]
 }

@@ -133,15 +133,14 @@ func generateRandomData(length int) string {
 func Handler(w http.ResponseWriter, r *http.Request) {
 	router := gin.Default()
 
-	// 服务静态文件
-	router.Static("/", "./public")
+	// Serve static files from the "public" directory
+	router.StaticFile("/", "./public/index.html")
 
-	router.GET("/hello", func(c *gin.Context) {
+	router.GET("/api", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "hello world",
+			"message": "Hello from Vercel Gin!",
 		})
 	})
-
 	// 将 Gin 的处理器适配到标准 net/http
 	router.ServeHTTP(w, r)
 }
