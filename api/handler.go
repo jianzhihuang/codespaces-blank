@@ -12,8 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var router *gin.Engine
-
 // func Handler() *gin.Engine {
 // 	// 初始化 Gin 引擎，并定义路由
 // 	router := gin.Default()
@@ -131,14 +129,19 @@ func generateRandomData(length int) string {
 	return builder.String()
 }
 
-// Handler 是 Vercel 需要的导出函数
-func InitHandler(w http.ResponseWriter, r *http.Request) {
-	router.GET("/hello", func(c *gin.Context) {
+// Handler 是导出的函数，将由 Vercel 执行
+func Handler(w http.ResponseWriter, r *http.Request) {
+	router := gin.Default()
 
-		c.JSON(http.StatusOK, gin.H{"message": "Welcome to the Gin server!"})
+	// 服务静态文件
+	router.Static("/", "./public")
+
+	router.GET("/hello", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "hello world",
+		})
 	})
 
 	// 将 Gin 的处理器适配到标准 net/http
-	http.Handle("/hello", router)
 	router.ServeHTTP(w, r)
 }
