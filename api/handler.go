@@ -141,6 +141,30 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			"message": "Hello from Vercel Gin!",
 		})
 	})
+	router.GET("/hello/:id/:type", func(c *gin.Context) {
+		id := c.Param("id")
+		type_ := c.Param("type")
+
+		var result string
+		switch type_ {
+		case "heart":
+			result = generateEmoji(id, []string{"❤️", "♡", "💖", "💟", "🎁"})
+		case "smile":
+			result = generateEmoji(id, []string{"😀", "🤩", "😊", "🙂", "☺️", "😋"})
+		case "cry":
+			result = generateEmoji(id, []string{"😢", "😭", "😿"})
+		case "cat":
+			result = generateEmoji(id, []string{"🐈", "😾", "🐱", "😻", "🐱‍🚀"})
+		case "dog":
+			result = generateEmoji(id, []string{"🐶", "🐕", "🦮", "🐩", "🐕‍🦺"})
+		case "pig":
+			result = generateEmoji(id, []string{"🐷", "🐽", "🐖", "🐗"})
+		default:
+			result = fmt.Sprintf("Hello, world! Your ID is %s %s", id, type_)
+		}
+
+		c.String(http.StatusOK, result)
+	})
 	// 将 Gin 的处理器适配到标准 net/http
 	router.ServeHTTP(w, r)
 }
