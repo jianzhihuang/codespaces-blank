@@ -133,6 +133,9 @@ func generateRandomData(length int) string {
 
 // Handler 是 Vercel 需要的导出函数
 func InitHandler(w http.ResponseWriter, r *http.Request) {
+	router.GET("/hello", func(c *gin.Context) {
 
+		c.JSON(http.StatusOK, gin.H{"message": "Welcome to the Gin server!"})
+	})
 	router.ServeHTTP(w, r)
 }
